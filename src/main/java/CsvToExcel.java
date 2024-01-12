@@ -1,22 +1,18 @@
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
-import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.xmlbeans.impl.xb.xsdschema.ListDocument;
 
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class CsvToExcel {
     private static final String ID_REGEX = "\\d{8}";
     private static final String MOBILE_REGEX = "^(\\+254|254|07)\\d{9}$";
     private static final String EMAIL_REGEX = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+    private static final int CHUNK_SIZE = 4000;
 
     public static void main(String[] args) {
         // Input and output file paths
@@ -28,39 +24,115 @@ public class CsvToExcel {
         long startTime = System.currentTimeMillis();
 
         try (CSVReader reader = new CSVReader(new FileReader(csvFilePath))) {
-            ListDocument.List<String[]> data;
-            try {
-                data = reader.readAll();
-            } catch (CsvException e) {
-                System.err.println("Error reading CSV file!!");
-                e.printStackTrace();
-                return;
-            }
+            // Skip the header row
+            String[] header = reader.readNext();
 
-            // Skip the second row of headers
-            data.remove(1);
-
-            // Separate gender data
-            List<String[]> maleData = filterAndValidateData(data, "Male");
-            List<String[]> femaleData = filterAndValidateData(data, "Female");
-            List<String[]> invalidData = data.stream()
-                    .filter(row -> !"Male".equalsIgnoreCase(row[4]) && !"Female".equalsIgnoreCase(row[4]))
-                    .collect(Collectors.toList());
-
-            // Write sheets
-            writeSheet(excelFilePath, "Male", maleData);
-            writeSheet(excelFilePath, "Female", femaleData);
-            writeSheet(excelFilePath, "Invalid data", invalidData);
+            // Process and write data in chunks
+            processAndWriteInChunks(reader, header, excelFilePath);
 
             System.out.println("....................Process has come to an end....................");
 
-        } catch (Exception e) {
+        } catch (CsvException csvException) {
+            System.err.println("CSV Exception: " + csvException.getMessage());
+            // Handle or log the exception as needed
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
         long endTime = System.currentTimeMillis();
         double durationInSeconds = (endTime - startTime) / 1000.0;
         System.out.println("Total execution time: " + formatExecutionTime(durationInSeconds));
+    }
+
+    private static void processAndWriteInChunks(CSVReader reader, String[] header, String excelFilePath) throws IOException {
+        Workbook workbook = new XSSFWorkbook();
+        String sheetNameMale = "Male";
+        String sheetNameFemale = "Female";
+        String sheetNameInvalid = "InvalidData";
+
+        try {
+            // Create sheets
+            Sheet sheetMale = workbook.createSheet(sheetNameMale);
+            Sheet sheetFemale = workbook.createSheet(sheetNameFemale);
+            Sheet sheetInvalid = workbook.createSheet(sheetNameInvalid);
+
+            // Add header to the sheets
+            Row titleRowMale = sheetMale.createRow(0);
+            Row titleRowFemale = sheetFemale.createRow(0);
+            Row titleRowInvalid = sheetInvalid.createRow(0);
+            for (int i = 0; i < header.length; i++) {
+                Cell titleCellMale = titleRowMale.createCell(i, CellType.STRING);
+                Cell titleCellFemale = titleRowFemale.createCell(i, CellType.STRING);
+                Cell titleCellInvalid = titleRowInvalid.createCell(i, CellType.STRING);
+
+                titleCellMale.setCellValue(header[i]);
+                titleCellFemale.setCellValue(header[i]);
+                titleCellInvalid.setCellValue(header[i]);
+            }
+
+            String[] row;
+            int rowCount = 0;
+            while ((row = reader.readNext()) != null) {
+                if (!isValid(row)) {
+                    // Add to the invalid data sheet
+                    addRowToSheet(sheetInvalid, row);
+                    continue;
+                }
+
+                // Determine gender and add to the respective sheet
+                if ("Male".equalsIgnoreCase(row[4])) {
+                    addRowToSheet(sheetMale, row);
+                } else if ("Female".equalsIgnoreCase(row[4])) {
+                    addRowToSheet(sheetFemale, row);
+                } else {
+                    // Add to the invalid data sheet if gender is neither Male nor Female
+                    addRowToSheet(sheetInvalid, row);
+                }
+
+                rowCount++;
+                if (rowCount % CHUNK_SIZE == 0) {
+                    // Write the workbook to the file and create a new workbook
+                    writeWorkbookToFile(workbook, excelFilePath);
+                    workbook = new XSSFWorkbook();
+                    sheetMale = workbook.createSheet(sheetNameMale);
+                    sheetFemale = workbook.createSheet(sheetNameFemale);
+                    sheetInvalid = workbook.createSheet(sheetNameInvalid);
+                    titleRowMale = sheetMale.createRow(0);
+                    titleRowFemale = sheetFemale.createRow(0);
+                    titleRowInvalid = sheetInvalid.createRow(0);
+                    for (int i = 0; i < header.length; i++) {
+                        Cell titleCellMale = titleRowMale.createCell(i, CellType.STRING);
+                        Cell titleCellFemale = titleRowFemale.createCell(i, CellType.STRING);
+                        Cell titleCellInvalid = titleRowInvalid.createCell(i, CellType.STRING);
+
+                        titleCellMale.setCellValue(header[i]);
+                        titleCellFemale.setCellValue(header[i]);
+                        titleCellInvalid.setCellValue(header[i]);
+                    }
+                }
+            }
+
+        } catch (CsvException e) {
+            throw new IOException("Error reading or validating CSV file.", e);
+        }
+
+        // Write the final workbook to the file
+        writeWorkbookToFile(workbook, excelFilePath);
+    }
+
+    private static void addRowToSheet(Sheet sheet, String[] row) {
+        int rowNum = sheet.getLastRowNum() + 1;
+        Row dataRow = sheet.createRow(rowNum);
+        for (int i = 0; i < row.length; i++) {
+            Cell cell = dataRow.createCell(i, CellType.STRING);
+            cell.setCellValue(row[i]);
+        }
+    }
+
+    private static void writeWorkbookToFile(Workbook workbook, String excelFilePath) throws IOException {
+        try (FileOutputStream fileOut = new FileOutputStream(excelFilePath, true)) {
+            workbook.write(fileOut);
+        }
     }
 
     private static String formatExecutionTime(double seconds) {
@@ -73,70 +145,9 @@ public class CsvToExcel {
         }
     }
 
-    private static List<String[]> filterAndValidateData(List<String[]> data, String gender) {
-        return data.stream()
-                .filter(row -> gender.equalsIgnoreCase(row[4]))
-                .filter(CsvToExcel::isValid)
-                .collect(Collectors.toList());
-    }
-
-    // Write data to Excel sheet
-    private static void writeSheet(String excelFilePath, String sheetName, List<String[]> data) {
-        try (Workbook workbook = getWorkbook(excelFilePath);
-             FileOutputStream fileOut = new FileOutputStream(excelFilePath)) {
-
-            Sheet sheet = workbook.getSheet(sheetName);
-
-            if (sheet == null || sheet.getPhysicalNumberOfRows() == 0) {
-                sheet = workbook.createSheet(sheetName);
-
-                // Add titles to the sheet
-                Row titleRow = sheet.createRow(0);
-                String[] titles = {"ID", "Name", "Mobile Number", "Email Address", "Gender"};
-                for (int i = 0; i < titles.length; i++) {
-                    Cell titleCell = titleRow.createCell(i, CellType.STRING);
-                    titleCell.setCellValue(titles[i]);
-                }
-
-                // Auto-fit column widths for titles
-                for (int i = 0; i < titles.length; i++) {
-                    sheet.autoSizeColumn(i);
-                }
-            }
-
-            // Add data to the sheet
-            for (int i = 0; i < data.size(); i++) {
-                Row row = sheet.createRow(sheet.getLastRowNum() + 1);
-                String[] rowData = data.get(i);
-                for (int j = 0; j < rowData.length; j++) {
-                    Cell cell = row.createCell(j, CellType.STRING);
-                    cell.setCellValue(rowData[j]);
-                }
-            }
-
-            // Auto-fit column
-            for (int i = 0; i < sheet.getRow(0).getPhysicalNumberOfCells(); i++) {
-                sheet.autoSizeColumn(i);
-            }
-
-            workbook.write(fileOut);
-
-        } catch (IOException | EncryptedDocumentException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static Workbook getWorkbook(String excelFilePath) throws IOException {
-        try {
-            return WorkbookFactory.create(new FileInputStream(excelFilePath));
-        } catch (IOException e) {
-            return new XSSFWorkbook();
-        }
-    }
-
     private static boolean isValid(String[] row) {
         if (row.length != 5) {
-            return false;
+            return false; // Ensure exactly 5 columns
         }
 
         String id = row[0].trim();
@@ -145,9 +156,6 @@ public class CsvToExcel {
         String emailAddress = row[3].trim();
         String gender = row[4].trim();
 
-        return Pattern.matches(ID_REGEX, id) &&
-                (mobileNumber.isEmpty() || Pattern.matches(MOBILE_REGEX, mobileNumber)) &&
-                (emailAddress.isEmpty() || Pattern.matches(EMAIL_REGEX, emailAddress)) &&
-                !id.isEmpty() && !name.isEmpty() && !gender.isEmpty() && !mobileNumber.isEmpty() && !emailAddress.isEmpty();
+        return !id.isEmpty() && !name.isEmpty() && !mobileNumber.isEmpty() && !emailAddress.isEmpty() && !gender.isEmpty() && Pattern.matches(ID_REGEX, id) && Pattern.matches(MOBILE_REGEX, mobileNumber) && Pattern.matches(EMAIL_REGEX, emailAddress);
     }
 }
