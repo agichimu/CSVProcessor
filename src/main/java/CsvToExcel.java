@@ -13,9 +13,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-
-
-
 public class CsvToExcel {
     private static final String ID_REGEX = "\\d{8}";
     private static final String MOBILE_REGEX = "^(\\+254|254|07)\\d{9}$";
@@ -66,7 +63,6 @@ public class CsvToExcel {
         System.out.println("Total execution time: " + formatExecutionTime(durationInSeconds));
     }
 
-    // Helper method to format time
     private static String formatExecutionTime(double seconds) {
         if (seconds >= 60) {
             long minutes = (long) (seconds / 60);
@@ -77,7 +73,6 @@ public class CsvToExcel {
         }
     }
 
-    // Filter and validate data based on gender
     private static List<String[]> filterAndValidateData(List<String[]> data, String gender) {
         return data.stream()
                 .filter(row -> gender.equalsIgnoreCase(row[4]))
