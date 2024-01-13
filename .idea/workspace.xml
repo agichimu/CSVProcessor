@@ -8,21 +8,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bae5e5b2-a7bd-4312-90c4-560e7ab41434" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/CsvToExcel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ExcelReorder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/female_data.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/female_data.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/invalid_data.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/invalid_data.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/male_data.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/male_data.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/other_data.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/other_data.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CSVProcessor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CsvToExcel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CsvToExcel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ExcelReorder.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,6 +29,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
@@ -112,8 +103,10 @@
       </method>
     </configuration>
     <configuration name="CsvToExcel" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="ALTERNATIVE_JRE_PATH" value="17" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="MAIN_CLASS_NAME" value="CsvToExcel" />
-      <module name="SystemMonitor" />
+      <module name="CSVProcessor" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -160,6 +153,9 @@
       <workItem from="1705045147632" duration="1130000" />
       <workItem from="1705047446703" duration="15676000" />
       <workItem from="1705065696512" duration="706000" />
+      <workItem from="1705091495201" duration="1550000" />
+      <workItem from="1705125828321" duration="478000" />
+      <workItem from="1705169159481" duration="496000" />
     </task>
     <servers />
   </component>

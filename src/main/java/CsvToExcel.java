@@ -12,7 +12,7 @@ public class CsvToExcel {
     private static final String ID_REGEX = "\\d{8}";
     private static final String MOBILE_REGEX = "^(\\+254|254|07)\\d{9}$";
     private static final String EMAIL_REGEX = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
-    private static final int CHUNK_SIZE = 4000;
+    private static final int CHUNK_SIZE = 4500;
 
     public static void main(String[] args) {
         // Input and output file paths
@@ -24,17 +24,15 @@ public class CsvToExcel {
         long startTime = System.currentTimeMillis();
 
         try (CSVReader reader = new CSVReader(new FileReader(csvFilePath))) {
-            // Skip the header row
+            // Skip the header
             String[] header = reader.readNext();
 
-            // Process and write data in chunks
             processAndWriteInChunks(reader, header, excelFilePath);
 
             System.out.println("....................Process has come to an end....................");
 
         } catch (CsvException csvException) {
             System.err.println("CSV Exception: " + csvException.getMessage());
-            // Handle or log the exception as needed
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -74,24 +72,20 @@ public class CsvToExcel {
             int rowCount = 0;
             while ((row = reader.readNext()) != null) {
                 if (!isValid(row)) {
-                    // Add to the invalid data sheet
                     addRowToSheet(sheetInvalid, row);
                     continue;
                 }
 
-                // Determine gender and add to the respective sheet
                 if ("Male".equalsIgnoreCase(row[4])) {
                     addRowToSheet(sheetMale, row);
                 } else if ("Female".equalsIgnoreCase(row[4])) {
                     addRowToSheet(sheetFemale, row);
                 } else {
-                    // Add to the invalid data sheet if gender is neither Male nor Female
                     addRowToSheet(sheetInvalid, row);
                 }
 
                 rowCount++;
                 if (rowCount % CHUNK_SIZE == 0) {
-                    // Write the workbook to the file and create a new workbook
                     writeWorkbookToFile(workbook, excelFilePath);
                     workbook = new XSSFWorkbook();
                     sheetMale = workbook.createSheet(sheetNameMale);
@@ -116,7 +110,6 @@ public class CsvToExcel {
             throw new IOException("Error reading or validating CSV file.", e);
         }
 
-        // Write the final workbook to the file
         writeWorkbookToFile(workbook, excelFilePath);
     }
 
@@ -147,7 +140,7 @@ public class CsvToExcel {
 
     private static boolean isValid(String[] row) {
         if (row.length != 5) {
-            return false; // Ensure exactly 5 columns
+            return false;
         }
 
         String id = row[0].trim();
