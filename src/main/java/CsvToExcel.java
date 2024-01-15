@@ -1,5 +1,7 @@
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -13,6 +15,10 @@ public class CsvToExcel {
     private static final String MOBILE_REGEX = "^(\\+254|254|07)\\d{9}$";
     private static final String EMAIL_REGEX = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
     private static final int CHUNK_SIZE = 4500;
+
+    private static final Logger log = LogManager.getLogger(CsvToExcel.class);
+
+
 
     public static void main(String[] args) {
         // Input and output file paths
@@ -34,7 +40,8 @@ public class CsvToExcel {
         } catch (CsvException csvException) {
             System.err.println("CSV Exception: " + csvException.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Ops!", e);
+            //e.printStackTrace();
         }
 
         long endTime = System.currentTimeMillis();
@@ -58,15 +65,7 @@ public class CsvToExcel {
             Row titleRowMale = sheetMale.createRow(0);
             Row titleRowFemale = sheetFemale.createRow(0);
             Row titleRowInvalid = sheetInvalid.createRow(0);
-            for (int i = 0; i < header.length; i++) {
-                Cell titleCellMale = titleRowMale.createCell(i, CellType.STRING);
-                Cell titleCellFemale = titleRowFemale.createCell(i, CellType.STRING);
-                Cell titleCellInvalid = titleRowInvalid.createCell(i, CellType.STRING);
-
-                titleCellMale.setCellValue(header[i]);
-                titleCellFemale.setCellValue(header[i]);
-                titleCellInvalid.setCellValue(header[i]);
-            }
+            Addheader(header, titleRowMale, titleRowFemale, titleRowInvalid);
 
             String[] row;
             int rowCount = 0;
@@ -94,15 +93,7 @@ public class CsvToExcel {
                     titleRowMale = sheetMale.createRow(0);
                     titleRowFemale = sheetFemale.createRow(0);
                     titleRowInvalid = sheetInvalid.createRow(0);
-                    for (int i = 0; i < header.length; i++) {
-                        Cell titleCellMale = titleRowMale.createCell(i, CellType.STRING);
-                        Cell titleCellFemale = titleRowFemale.createCell(i, CellType.STRING);
-                        Cell titleCellInvalid = titleRowInvalid.createCell(i, CellType.STRING);
-
-                        titleCellMale.setCellValue(header[i]);
-                        titleCellFemale.setCellValue(header[i]);
-                        titleCellInvalid.setCellValue(header[i]);
-                    }
+                    Addheader(header, titleRowMale, titleRowFemale, titleRowInvalid);
                 }
             }
 
@@ -111,6 +102,18 @@ public class CsvToExcel {
         }
 
         writeWorkbookToFile(workbook, excelFilePath);
+    }
+
+    private static void Addheader(String[] header, Row titleRowMale, Row titleRowFemale, Row titleRowInvalid) {
+        for (int i = 0; i < header.length; i++) {
+            Cell titleCellMale = titleRowMale.createCell(i, CellType.STRING);
+            Cell titleCellFemale = titleRowFemale.createCell(i, CellType.STRING);
+            Cell titleCellInvalid = titleRowInvalid.createCell(i, CellType.STRING);
+
+            titleCellMale.setCellValue(header[i]);
+            titleCellFemale.setCellValue(header[i]);
+            titleCellInvalid.setCellValue(header[i]);
+        }
     }
 
     private static void addRowToSheet(Sheet sheet, String[] row) {

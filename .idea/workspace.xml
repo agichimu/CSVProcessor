@@ -8,9 +8,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bae5e5b2-a7bd-4312-90c4-560e7ab41434" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CsvToExcel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CsvToExcel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ExcelReorder.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,7 +34,7 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -48,31 +48,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;Application.CSVProcessor.executor&quot;: &quot;Run&quot;,
-    &quot;Application.CsvToExcel (1).executor&quot;: &quot;Run&quot;,
-    &quot;Application.CsvToExcel (2).executor&quot;: &quot;Run&quot;,
-    &quot;Application.CsvToExcel (3).executor&quot;: &quot;Run&quot;,
-    &quot;Application.CsvToExcel (4).executor&quot;: &quot;Run&quot;,
-    &quot;Application.CsvToExcel.executor&quot;: &quot;Run&quot;,
-    &quot;Application.ExcelReorder.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/mnt/hgfs/Ubuntu back/CSVProcessor&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.project.maven.repository.indices&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "Application.CSVProcessor.executor": "Run",
+    "Application.CsvToExcel (1).executor": "Run",
+    "Application.CsvToExcel (2).executor": "Run",
+    "Application.CsvToExcel (3).executor": "Run",
+    "Application.CsvToExcel (4).executor": "Run",
+    "Application.CsvToExcel.executor": "Run",
+    "Application.ExcelReorder.executor": "Run",
+    "Maven.SystemMonitor [org.apache.maven.plugins:maven-clean-plugin:3.2.0:clean].executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "master",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/mnt/hgfs/Ubuntu back/CSVProcessor",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "reference.settings.project.maven.repository.indices",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Application.CsvToExcel">
     <configuration name="CsvToExcel (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="CsvToExcel" />
@@ -156,6 +157,8 @@
       <workItem from="1705091495201" duration="1550000" />
       <workItem from="1705125828321" duration="478000" />
       <workItem from="1705169159481" duration="496000" />
+      <workItem from="1705216354109" duration="26000" />
+      <workItem from="1705321096600" duration="2534000" />
     </task>
     <servers />
   </component>
